@@ -1,0 +1,76 @@
+학습데이터  -> 모델 학습
+테스트 데이터 -> 모델로 테스트 예측     
+ => 결과평가, 예측값과 실제값 정확도 평가.
+
+Estimator 을 이용하여 학습(fit), 예측(predict)한다.
+
+- Classifier estimator (분류)
+> DecisionTreeClassifier
+> RandomForestClassifier
+> GradientBoostingClassifier
+> GaussianNB
+> SVC
+
+- Regressor estimator (회귀)
+> LinearRegression
+> Ridge
+> Lasso
+> RandomForestRegressor
+> GradientBoostingRegressor
+
+
+
+전처리 preprocessiong
+1. LabelEncoder : 라벨인코더 - sklearn.preprocessing 패키지에 있는 LabelEncoder,
+n개의 범주형 데이터를 0부터 n-1까지의 연속적 수치 데이터로 표현.
+ 인코딩의 결과가 수치적인 차이를 의미하진 않는다.
+
+2. OneHotEncoding : 원핫인코더 - sklearn.preprocessing 패키지의 OneHotEncoder,
+표현하고 싶은 단어의 인덱스에 1의 값을 부여하고, 다른 인덱스에는 0을 부여하는 벡터 표현.
+텍스트를 숫자로 표현하는 대표적인 방법.
++) pandas 의 get_dummies 를 이용할 수 있다. => pd.get_dummies()
+
+
+
+*학습데이터, 테스트데이터 분리 : train_test_split
+sklearn.model_selection의 train_test_split 이용.
+- 데이터 셋을 분리하는 이유 : 과적합(overfitting)방지. 실제 모델을 활용하기 위해서는 학습에 사용되지 않는 데이터에 대한 예측을 검정할 필요가 있다.
+
+
+
+sklearn estimator 생성하여 학습/예측/평가
+- sklearn.tree, DecisionTreeClassifier : 결정트리 
+- sklearn.ensemble, RandomForestClassifier : RandomForest
+- sklearn.linesr_model, LogisticRegression : 로지스틱 회귀
+
+결과, 예측정확도(평가)
+- sklearn.metrics의 accuracy_score
+
+
+
+교차검증(cross validation)
+: 데이터를 여러 번 반복해서 나누고 여러 모델을 학습하여 성능을 평가하는 방법
+- sklearn.model_selection, KFold
+> 데이터를 k개로 분할한 뒤, k-1개를 학습용 데이터 세트로, 1개를 평가용 데이터 세트로 사용
+> k번 반복하여 k개의 성능 지표를 얻어내는 방법
+> 샘플 수가 충분치 못한 경우에 대하여 정확도를 향상시킬 수 있다.
+
+*KFold는 class imbalance를 고려하지 않음.
+- sklearn.model_selection, StratifiedKFold (불균형 데이터에 적합)
+> 각 클래스에 대한 비율을 고려해서 fold를 나눔, 전체 훈련 데이터의 class 비율과 각 fold가 가지고 있는 클래스의 비율을 맞춰준다.
+
+=> cross_val_score()
+교차검증을 간단하게! 기존에 폴드 세트를 지정하고, for 루프에서 반복으로 학습 및 테스트 데이터의 인덱스를 추출하고, 반복적으로 학습과 예측을 수행하는 일련의 과정을 한번에 수행해주는 API.
+특히 classifier 학습을 진행하는 경우 자동으로 stratified KFold 방식을 진행해줌.
+- cross_val_score( estimator, X, y, scoring=평가지표, cv=교차 검증 폴드 수(int or kfold) ) 
+
+
+
+머신러닝에서 모델의 성능향상 기법, GridSearchCV
+사이킷런에서는 분류 알고리즘이나 회귀 알고리즘에 사용되는 하이퍼파라미터를 순차적으로 입력해 학습을 하고 측정을 하면서 가장 좋은 파라미터를 찾는 매소드. 사용자가 직접 모델의 하이퍼 파라미터의 값을 리스트로 입력하면 값에 대한 경우의 수마다 예측 성능을 측정 평가하여 비교하면서 최적의 하이퍼 파라미터 값을 찾는 과정을 진행함.
+- sklearn.model_selection.GridSearchCV(estimator, param_grid, *, scoring=None, n_jobs=None, refit=True, cv=None, verbose=0, pre_dispatch='2*n_jobs', error_score=nan, return_train_score=False)[source]
+> 시간이 오래걸린다는 단점.
+
+
+
+
